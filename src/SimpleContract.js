@@ -1,68 +1,29 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
+import { CONTACT_ADDRESS, ABI } from './Web3Config'
 import { Form, Icon, Input, Button, Card } from 'antd'
 
 class SimpleContract extends Component {
   constructor(props) {
     super(props)
-    // Contract Address
     this.state = {
-      contractAddress: '0x1cE946B3f26E27DF21984bc1A4EF6011BEDFb170',
+      contractAddress: CONTACT_ADDRESS,
       balance: 0,
       mycontract: null
     }
     // WEB-3
     this.web3 = new Web3(Web3.givenProvider)
-
-    //READ MORE
-    // https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html
+    //READ MORE >> https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html
   }
-
-  componentWillMount() {}
 
   componentDidMount() {
     this._getBalance()
   }
 
   _getBalance() {
-    // add ABI in evert handling method
-    var abi = [
-      {
-        constant: false,
-        inputs: [
-          {
-            name: 'newBalance',
-            type: 'uint256'
-          }
-        ],
-        name: 'setBalance',
-        outputs: [],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function'
-      },
-      {
-        inputs: [],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'constructor'
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'getBalance',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256'
-          }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function'
-      }
-    ]
-    var myContract = new this.web3.eth.Contract(abi, this.state.contractAddress)
+    // SETUP VAR
+    var myContract = new this.web3.eth.Contract(ABI, CONTACT_ADDRESS)
+    // TRANSACTION
     myContract.methods
       .getBalance()
       .call()
@@ -70,8 +31,22 @@ class SimpleContract extends Component {
         this.setState({ balance: _balance })
       })
     this.setState({ mycontract: myContract })
+    // LOGGER
     console.log('get bank balance')
     console.log(this.state)
+  }
+
+  _setBalance() {
+    alert('set new balance >>>')
+    // this.state.mycontract
+    //   .setBalance(999)
+    //   .send({ from: this.state.contractAddress })
+    //   .on('receipt', res => {
+    //     console.log(res)
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
   }
 
   render() {
@@ -108,7 +83,7 @@ class SimpleContract extends Component {
                 type="primary"
                 htmlType="submit"
                 className="login-form-button"
-                onClick={() => alert('set balance!!!')}
+                onClick={() => this._setBalance()}
                 style={{ width: 180, margin: 'auto' }}
               >
                 Set New Balance
